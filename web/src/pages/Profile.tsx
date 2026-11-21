@@ -1,10 +1,16 @@
 import { useState } from 'react';
 import { Save, GraduationCap, Briefcase, Plus } from 'lucide-react';
 import { motion, AnimatePresence, type Variants } from 'framer-motion';
+import { State, Country } from 'country-state-city';
 
 export default function Profile() {
   const [activeTab, setActiveTab] = useState('Personal');
   const tabs = ['Personal', 'Education', 'Experience', 'Other'];
+  const [selectedState, setSelectedState] = useState('');
+  const countries = Country.getAllCountries();
+  const indianStates = State.getStatesOfCountry('IN');
+
+
 
   // Animation for the Tab Content
   const contentVariants: Variants = {
@@ -111,17 +117,35 @@ export default function Profile() {
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Country <span className="text-red-500">*</span></label>
-                      <select className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-900 transition-all">
-                        <option value="">Country</option>
-                        <option value="India">India</option>
-                      </select>
+                     <select
+                        defaultValue="IN"
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-900 transition-all"
+                      >
+                        <option value="IN">India</option>
+
+                        {countries
+                          .filter((country) => country.isoCode !== 'IN')
+                          .map((country) => (
+                            <option key={country.isoCode} value={country.isoCode}>
+                              {country.name}
+                            </option>
+                          ))}
+                        </select>
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">State <span className="text-red-500">*</span></label>
-                      <select className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-900 transition-all">
-                        <option value="">State</option>
-                        <option value="MH">Maharastra</option>
-                      </select>
+                     <select
+                          value={selectedState}
+                          onChange={(e) => setSelectedState(e.target.value)}
+                          className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-900 transition-all"
+                        >
+                          <option value="">State</option>
+                          {indianStates.map((state) => (
+                            <option key={state.isoCode} value={state.isoCode}>
+                              {state.name}
+                            </option>
+                          ))}
+                    </select>
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">City <span className="text-red-500">*</span></label>

@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.5",
+    "country-state-city": "^3.2.1",
     "framer-motion": "^14.14.0",
     "lucide-react": "^1.77.0",
     "react": "^19.3.1",
