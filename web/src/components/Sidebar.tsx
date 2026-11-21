@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { 
   LayoutDashboard, Building2, Users, TrendingUp, Handshake, 
   MessageSquare, User, Inbox, Briefcase, ClipboardList, ChevronDown, Zap 
 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const menuItems = [
   { label: 'Dashboard', icon: LayoutDashboard, path: '/' },
@@ -48,6 +49,15 @@ export default function Sidebar() {
     'Account': true, 
   });
 
+  // Auto-open dropdown if a sub-item is active on page load/refresh
+  useEffect(() => {
+    menuItems.forEach(item => {
+      if (item.subItems?.some(sub => location.pathname === sub.path)) {
+        setOpenMenus(prev => ({ ...prev, [item.label]: true }));
+      }
+    });
+  }, [location.pathname]);
+
   const toggleMenu = (label: string) => {
     setOpenMenus(prev => ({ ...prev, [label]: !prev[label] }));
   };
@@ -68,8 +78,10 @@ export default function Sidebar() {
       {/* Navigation Menu */}
       <div className="flex-1 overflow-y-auto px-4 py-2 space-y-1">
         {menuItems.map((item) => {
-          const isActive = location.pathname === item.path || 
-                           (item.subItems && item.subItems.some(sub => location.pathname === sub.path));
+          // Check if parent OR any sub-item is active
+          const isSubItemActive = item.subItems?.some(sub => location.pathname === sub.path);
+          const isActive = location.pathname === item.path || isSubItemActive;
+          
           const isOpen = openMenus[item.label];
 
           return (
@@ -77,8 +89,7 @@ export default function Sidebar() {
               {/* Main Item */}
               <div 
                 className={`flex items-center justify-between px-3 py-2.5 rounded-lg cursor-pointer transition ${
-                  isActive && !item.subItems ? 'bg-black text-white' : 
-                  isActive ? 'text-white font-medium' : 'text-gray-700 hover:bg-gray-100'
+                  isActive ? 'bg-gray-900 text-white shadow-sm' : 'text-gray-700 hover:bg-gray-100'
                 }`}
                 onClick={() => item.subItems ? toggleMenu(item.label) : null}
               >
@@ -88,31 +99,48 @@ export default function Sidebar() {
                   onClick={(e) => item.subItems && e.preventDefault()}
                 >
                   <item.icon size={18} className={isActive ? 'text-white' : 'text-gray-500'} />
-                  <span className="text-sm">{item.label}</span>
+                  <span className="text-sm font-medium">{item.label}</span>
                 </NavLink>
                 {item.subItems && (
-                  <ChevronDown size={16} className={`text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+                  <ChevronDown 
+                    size={16} 
+                    className={`transition-transform duration-300 ${isOpen ? 'rotate-180' : ''} ${
+                      isActive ? 'text-gray-300' : 'text-gray-400'
+                    }`} 
+                  />
                 )}
               </div>
 
-              {/* Sub Items (Dropdown) */}
-              {item.subItems && isOpen && (
-                <div className="mt-1 ml-4 border-l-2 border-gray-100 pl-3 space-y-1">
-                  {item.subItems.map((sub) => (
-                    <NavLink
-                      key={sub.label}
-                      to={sub.path}
-                      className={({ isActive }) =>
-                        `block px-3 py-2 rounded-lg text-sm transition ${
-                          isActive ? 'text-black bg-blue-50 font-medium' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'
-                        }`
-                      }
-                    >
-                      {sub.label}
-                    </NavLink>
-                  ))}
-                </div>
-              )}
+              {/* Sub Items (Dropdown) with Animation */}
+              <AnimatePresence initial={false}>
+                {item.subItems && isOpen && (
+                  <motion.div 
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="mt-1 ml-4 border-l-2 border-gray-100 pl-3 space-y-1 py-1">
+                      {item.subItems.map((sub) => (
+                        <NavLink
+                          key={sub.label}
+                          to={sub.path}
+                          className={({ isActive }) =>
+                            `block px-3 py-2 rounded-lg text-sm transition-all duration-200 ${
+                              isActive 
+                                ? 'text-gray-900 bg-gray-100 font-semibold translate-x-1' 
+                                : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50 hover:translate-x-1'
+                            }`
+                          }
+                        >
+                          {sub.label}
+                        </NavLink>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           );
         })}
