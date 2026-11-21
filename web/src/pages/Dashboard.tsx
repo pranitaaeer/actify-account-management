@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { accounts, getStats, industries } from '../data/accounts';
+import { accounts, getStats, industries } from '@shared/data';
 import StatCard from '../components/StatCard';
 import AccountRow from '../components/AccountRow';
 import IndustryBar from '../components/IndustryBar';

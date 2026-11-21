@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { accounts, industries } from '../data/accounts';
+import { accounts, industries } from '@shared/data';
 import AccountRow from '../components/AccountRow';
 
 export default function ViewAccounts() {

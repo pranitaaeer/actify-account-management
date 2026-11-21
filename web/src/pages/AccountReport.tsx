@@ -1,4 +1,4 @@
-import { accounts, industries, getStats } from '../data/accounts';
+import { accounts, getStats, industries } from '@shared/data';
 import { Building2, CheckCircle2, XCircle, PieChart } from 'lucide-react';
 
 export default function AccountReport() {

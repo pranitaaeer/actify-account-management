@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { industries } from '../data/accounts';
+import { industries } from '@shared/data';
 
 export default function AddAccount() {
   const [form, setForm] = useState({
