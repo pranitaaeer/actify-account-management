@@ -1,20 +1,15 @@
 module.exports = function (api) {
   api.cache(true);
+  const path = require('path');
+  const sharedDirectory = path.resolve(__dirname, '../shared');
+
   return {
     presets: [
       ["babel-preset-expo", { jsxImportSource: "nativewind" }],
-      "nativewind/babel",
     ],
     plugins: [
-      'react-native-reanimated/plugin',
-      [
-        'module-resolver',
-        {
-          alias: {
-            '@shared': '../shared',
-          },
-        },
-      ],
+      ['module-resolver', { alias: { '@shared': sharedDirectory } }],
+      'react-native-worklets/plugin', 
     ],
   };
 };

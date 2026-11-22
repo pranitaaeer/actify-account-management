@@ -56,7 +56,7 @@ export default function Dashboard() {
       <View className="bg-white rounded-xl border border-gray-200 p-4 mt-6 shadow-sm">
         <View className="flex-row items-center justify-between mb-3">
           <Text className="text-base font-semibold text-gray-900">Recent Accounts</Text>
-          <TouchableOpacity onPress={() => router.push('/accounts')} className="flex-row items-center gap-1">
+          <TouchableOpacity onPress={() => router.push('/accounts' as never)} className="flex-row items-center gap-1">
             <Text className="text-sm text-blue-600 font-medium">View all</Text>
             <ArrowRight size={14} color="#2563EB" />
           </TouchableOpacity>

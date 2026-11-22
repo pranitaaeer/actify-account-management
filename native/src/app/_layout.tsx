@@ -1,5 +1,5 @@
 // @ts-ignore NativeWind CSS is loaded by the bundler and has no TypeScript module declaration.
-import "../../global.css"; // NativeWind Tailwind styles
+import "../global.css"; // NativeWind Tailwind styles
 import { useRouter, usePathname } from 'expo-router';
 import { Drawer } from 'expo-router/drawer';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
@@ -9,6 +9,7 @@ import {
   Inbox, Zap ,PieChart,Upload,MessageSquare,User,Briefcase,ClipboardList
 } from 'lucide-react-native';
 
+
 // Custom Drawer Content (Sidebar equivalent for mobile)
 function CustomDrawerContent(props: any) {
   const router = useRouter();
@@ -17,7 +18,7 @@ function CustomDrawerContent(props: any) {
   // Menu Items List
   const menuItems = [
     { label: 'Dashboard', icon: LayoutDashboard, path: '/' },
-    { label: 'Accounts', icon: Building2, path: '/accounts' },
+    { label: 'Accounts', icon: Building2, path: '/account' },
     { label: 'Account Report', icon: PieChart, path: '/account-report' },
     { label: 'Account Upload', icon: Upload, path: '/account-upload' }, 
     { label: 'Contacts', icon: Users, path: '/contacts' },
@@ -28,9 +29,9 @@ function CustomDrawerContent(props: any) {
     { label: 'Profile', icon: User, path: '/profile' },
     { label: 'My Jobs', icon: Briefcase, path: '/my-jobs' },
     { label: 'Test Results', icon: ClipboardList, path: '/test-results' },
-  ];
+  ] as const;
 
-  const navigateTo = (path: string) => {
+  const navigateTo = (path: (typeof menuItems)[number]['path']) => {
     router.push(path);
     props.navigation.closeDrawer(); // Close drawer after clicking
   };
@@ -101,7 +102,7 @@ export default function RootLayout() {
         }}
       >
         <Drawer.Screen name="index" options={{ title: 'Dashboard' }} />
-        <Drawer.Screen name="accounts" options={{ title: 'Accounts' }} />
+        <Drawer.Screen name="account" options={{ title: 'Accounts' }} />
         <Drawer.Screen name="account-report" options={{ title: 'Account Report' }} />
         <Drawer.Screen name="account-upload" options={{ title: 'Account Upload' }} />
         <Drawer.Screen name="contacts" options={{ title: 'Contacts' }} />

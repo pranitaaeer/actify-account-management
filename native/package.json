@@ -4,6 +4,7 @@
   "main": "expo-router/entry",
   "dependencies": {
     "@expo/ui": "~58.0.29",
+    "country-state-city": "^3.2.1",
     "expo": "~58.0.26",
     "expo-constants": "~58.0.16",
     "expo-device": "~58.0.5",
@@ -32,6 +33,7 @@
   },
   "devDependencies": {
     "@types/react": "~19.3.0",
+    "babel-plugin-module-resolver": "^5.0.3",
     "typescript": "~6.0.3"
   },
   "scripts": {

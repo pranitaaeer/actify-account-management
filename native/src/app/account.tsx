@@ -2,9 +2,11 @@ import { useState } from 'react';
 import { View, Text, FlatList, TextInput, TouchableOpacity } from 'react-native';
 import { accounts } from '@shared/data';
 import { Search, Plus } from 'lucide-react-native';
+import CreateAccountModal from '../components/CreateAccountModal'; 
 
 export default function Accounts() {
   const [search, setSearch] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false); // Modal State
 
   const filteredAccounts = accounts.filter((acc) => 
     acc.name.toLowerCase().includes(search.toLowerCase()) || 
@@ -25,7 +27,10 @@ export default function Accounts() {
             placeholderTextColor="#9CA3AF"
           />
         </View>
-        <TouchableOpacity className="bg-blue-600 p-2.5 rounded-lg shadow-sm">
+        <TouchableOpacity 
+          onPress={() => setIsModalOpen(true)} 
+          className="bg-black p-2.5 rounded-lg shadow-sm"
+        >
           <Plus size={20} color="white" />
         </TouchableOpacity>
       </View>
@@ -49,6 +54,11 @@ export default function Accounts() {
             <Text className="text-xs text-gray-500 font-medium">{item.industry}</Text>
           </View>
         )}
+      />
+
+      <CreateAccountModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
       />
     </View>
   );
