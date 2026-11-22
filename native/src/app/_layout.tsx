@@ -6,7 +6,7 @@ import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { 
   LayoutDashboard, Building2, Users, TrendingUp, Handshake, 
-  Inbox, Zap 
+  Inbox, Zap ,PieChart,Upload,MessageSquare,User,Briefcase,ClipboardList
 } from 'lucide-react-native';
 
 // Custom Drawer Content (Sidebar equivalent for mobile)
@@ -18,10 +18,16 @@ function CustomDrawerContent(props: any) {
   const menuItems = [
     { label: 'Dashboard', icon: LayoutDashboard, path: '/' },
     { label: 'Accounts', icon: Building2, path: '/accounts' },
+    { label: 'Account Report', icon: PieChart, path: '/account-report' },
+    { label: 'Account Upload', icon: Upload, path: '/account-upload' }, 
     { label: 'Contacts', icon: Users, path: '/contacts' },
     { label: 'Leads', icon: TrendingUp, path: '/leads' },
     { label: 'Deals', icon: Handshake, path: '/deals' },
     { label: 'Inbox', icon: Inbox, path: '/inbox' },
+    { label: 'Feedback', icon: MessageSquare, path: '/feedback' },
+    { label: 'Profile', icon: User, path: '/profile' },
+    { label: 'My Jobs', icon: Briefcase, path: '/my-jobs' },
+    { label: 'Test Results', icon: ClipboardList, path: '/test-results' },
   ];
 
   const navigateTo = (path: string) => {
@@ -96,11 +102,17 @@ export default function RootLayout() {
       >
         <Drawer.Screen name="index" options={{ title: 'Dashboard' }} />
         <Drawer.Screen name="accounts" options={{ title: 'Accounts' }} />
+        <Drawer.Screen name="account-report" options={{ title: 'Account Report' }} />
+        <Drawer.Screen name="account-upload" options={{ title: 'Account Upload' }} />
         <Drawer.Screen name="contacts" options={{ title: 'Contacts' }} />
         <Drawer.Screen name="leads" options={{ title: 'Leads' }} />
         <Drawer.Screen name="deals" options={{ title: 'Deals' }} />
         <Drawer.Screen name="inbox" options={{ title: 'Inbox' }} />
-      </Drawer>
+        <Drawer.Screen name="feedback" options={{ title: 'Feedback' }} />
+        <Drawer.Screen name="profile" options={{ title: 'Profile' }} />
+        <Drawer.Screen name="my-jobs" options={{ title: 'My Jobs' }} />
+        <Drawer.Screen name="test-results" options={{ title: 'Test Results' }} />
+        </Drawer>
     </GestureHandlerRootView>
   );
 }
