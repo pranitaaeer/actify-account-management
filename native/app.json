@@ -1,10 +1,15 @@
 {
   "expo": {
-    "name": "native",
-    "slug": "native",
+    "name": "Actify",
+    "slug": "Actify",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/logo.png",
+    "splash": {
+      "image": "./assets/logo.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
     "scheme": "native",
     "userInterfaceStyle": "automatic",
     "ios": {

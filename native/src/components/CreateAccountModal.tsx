@@ -1,7 +1,14 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Modal, View, Text, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { X } from 'lucide-react-native';
 import { industries } from '@shared/data';
+import Animated, { 
+  FadeIn, 
+  FadeOut, 
+  SlideInDown, 
+  SlideOutDown, 
+  ZoomIn 
+} from 'react-native-reanimated';
 
 interface CreateAccountModalProps {
   isOpen: boolean;
@@ -31,34 +38,51 @@ export default function CreateAccountModal({ isOpen, onClose }: CreateAccountMod
     }, 300);
   };
 
+  // Agar modal closed hai toh kuch bhi render mat karo taaki enter/exit animations smooth chalein
+  if (!isOpen) return null;
+
   return (
     <Modal
       visible={isOpen}
-      animationType="slide"
       transparent={true}
       onRequestClose={onClose}
     >
       <KeyboardAvoidingView 
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        className="flex-1 justify-end bg-black/50"
+        className="flex-1 justify-end"
       >
-        <View className="bg-white rounded-t-3xl w-full max-h-[90%]">
+        {/* Backdrop with Fade In */}
+        <Animated.View 
+          entering={FadeIn.duration(300)}
+          exiting={FadeOut.duration(300)}
+          className="absolute inset-0 bg-black/60" 
+        >
+          <TouchableOpacity className="flex-1" onPress={onClose} />
+        </Animated.View>
+
+        {/* Modal Content with Slide Up */}
+        <Animated.View 
+          entering={SlideInDown.springify().damping(15)}
+          exiting={SlideOutDown.duration(300)}
+          className="bg-white rounded-t-3xl w-full max-h-[90%] shadow-2xl"
+        >
           {/* Header */}
           <View className="flex-row items-start justify-between p-6 border-b border-gray-100">
             <View>
               <Text className="text-xl font-bold text-gray-900">Add New Account</Text>
               <Text className="text-sm text-gray-500 mt-1">Fill in the details to create a new account.</Text>
             </View>
-            <TouchableOpacity onPress={onClose} className="p-1 bg-gray-100 rounded-full mt-1">
+            <TouchableOpacity onPress={onClose} className="p-1.5 bg-gray-100 rounded-full mt-1 active:opacity-70">
               <X size={20} color="#374151" />
             </TouchableOpacity>
           </View>
 
           {/* Form Body */}
-          <ScrollView className="p-6">
+          <ScrollView className="p-6" showsVerticalScrollIndicator={false}>
             <View className="gap-y-4">
+              
               {/* Account Name */}
-              <View>
+              <Animated.View entering={FadeIn.delay(100).duration(400)}>
                 <Text className="text-sm font-medium text-gray-700 mb-1.5">Account Name <Text className="text-red-500">*</Text></Text>
                 <TextInput
                   value={form.name}
@@ -67,10 +91,10 @@ export default function CreateAccountModal({ isOpen, onClose }: CreateAccountMod
                   placeholderTextColor="#9CA3AF"
                   className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm text-gray-900 focus:border-gray-900"
                 />
-              </View>
+              </Animated.View>
 
               {/* Email */}
-              <View>
+              <Animated.View entering={FadeIn.delay(150).duration(400)}>
                 <Text className="text-sm font-medium text-gray-700 mb-1.5">Email <Text className="text-red-500">*</Text></Text>
                 <TextInput
                   value={form.email}
@@ -79,12 +103,12 @@ export default function CreateAccountModal({ isOpen, onClose }: CreateAccountMod
                   autoCapitalize="none"
                   placeholder="deepu18@example.com"
                   placeholderTextColor="#9CA3AF"
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm text-gray-900"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm text-gray-900 focus:border-gray-900"
                 />
-              </View>
+              </Animated.View>
 
               {/* Phone */}
-              <View>
+              <Animated.View entering={FadeIn.delay(200).duration(400)}>
                 <Text className="text-sm font-medium text-gray-700 mb-1.5">Phone Number <Text className="text-red-500">*</Text></Text>
                 <TextInput
                   value={form.phone}
@@ -92,12 +116,12 @@ export default function CreateAccountModal({ isOpen, onClose }: CreateAccountMod
                   keyboardType="phone-pad"
                   placeholder="+91-720-803-0455"
                   placeholderTextColor="#9CA3AF"
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm text-gray-900"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm text-gray-900 focus:border-gray-900"
                 />
-              </View>
+              </Animated.View>
 
               {/* Website */}
-              <View>
+              <Animated.View entering={FadeIn.delay(250).duration(400)}>
                 <Text className="text-sm font-medium text-gray-700 mb-1.5">Website</Text>
                 <TextInput
                   value={form.website}
@@ -106,15 +130,15 @@ export default function CreateAccountModal({ isOpen, onClose }: CreateAccountMod
                   autoCapitalize="none"
                   placeholder="https://example.com (optional)"
                   placeholderTextColor="#9CA3AF"
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm text-gray-900"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm text-gray-900 focus:border-gray-900"
                 />
-              </View>
+              </Animated.View>
 
-              {/* Industry Dropdown (Simple Representation for Native) */}
-              <View>
+              {/* Industry Chips */}
+              <Animated.View entering={FadeIn.delay(300).duration(400)}>
                 <Text className="text-sm font-medium text-gray-700 mb-1.5">Industry <Text className="text-red-500">*</Text></Text>
-                <View className="border border-gray-300 rounded-lg overflow-hidden">
-                  <ScrollView horizontal className="p-1">
+                <View className="border border-gray-300 rounded-lg overflow-hidden py-1">
+                  <ScrollView horizontal showsHorizontalScrollIndicator={false} className="px-2">
                     {industries.map((ind) => (
                       <TouchableOpacity 
                         key={ind} 
@@ -126,10 +150,10 @@ export default function CreateAccountModal({ isOpen, onClose }: CreateAccountMod
                     ))}
                   </ScrollView>
                 </View>
-              </View>
+              </Animated.View>
 
-              {/* Status */}
-              <View>
+              {/* Status Buttons */}
+              <Animated.View entering={FadeIn.delay(350).duration(400)}>
                 <Text className="text-sm font-medium text-gray-700 mb-1.5">Account Status <Text className="text-red-500">*</Text></Text>
                 <View className="flex-row gap-x-2">
                   {['Active', 'Inactive'].map((status) => (
@@ -142,10 +166,10 @@ export default function CreateAccountModal({ isOpen, onClose }: CreateAccountMod
                     </TouchableOpacity>
                   ))}
                 </View>
-              </View>
+              </Animated.View>
 
               {/* Remark */}
-              <View>
+              <Animated.View entering={FadeIn.delay(400).duration(400)}>
                 <Text className="text-sm font-medium text-gray-700 mb-1.5">Remark</Text>
                 <TextInput
                   value={form.remark}
@@ -154,29 +178,29 @@ export default function CreateAccountModal({ isOpen, onClose }: CreateAccountMod
                   placeholderTextColor="#9CA3AF"
                   multiline
                   numberOfLines={3}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm text-gray-900 h-24"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm text-gray-900 h-24 focus:border-gray-900"
                   textAlignVertical="top"
                 />
-              </View>
+              </Animated.View>
             </View>
 
             {/* Footer Buttons */}
-            <View className="flex-row gap-x-3 mt-8 mb-4">
+            <Animated.View entering={FadeIn.delay(450).duration(400)} className="flex-row gap-x-3 mt-8 mb-4">
               <TouchableOpacity
                 onPress={onClose}
-                className="flex-1 py-3 bg-white border border-gray-300 rounded-lg items-center"
+                className="flex-1 py-3 bg-white border border-gray-300 rounded-lg items-center active:bg-gray-50"
               >
                 <Text className="text-sm font-medium text-gray-700">Cancel</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={handleSubmit}
-                className="flex-1 py-3 bg-gray-900 rounded-lg items-center"
+                className="flex-1 py-3 bg-gray-900 rounded-lg items-center active:scale-95 transition-transform"
               >
                 <Text className="text-sm font-medium text-white">Create Account</Text>
               </TouchableOpacity>
-            </View>
+            </Animated.View>
           </ScrollView>
-        </View>
+        </Animated.View>
       </KeyboardAvoidingView>
     </Modal>
   );

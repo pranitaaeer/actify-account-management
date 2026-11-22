@@ -1,7 +1,9 @@
+import { useEffect } from 'react';
 import { ScrollView, View, Text, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { accounts, getStats, industries } from '@shared/data';
 import { ArrowRight, Users, TrendingUp, Handshake } from 'lucide-react-native';
+import Animated, { useSharedValue, useAnimatedStyle, withTiming, withDelay, FadeInDown, FadeInUp } from 'react-native-reanimated';
 
 export default function Dashboard() {
   const router = useRouter();
@@ -16,44 +18,40 @@ export default function Dashboard() {
   return (
     <ScrollView className="flex-1 bg-gray-50 p-4">
       {/* Header */}
-      <View className="mb-6">
+      <Animated.View entering={FadeInUp.duration(500)} className="mb-6">
         <Text className="text-2xl font-bold text-gray-900">Dashboard</Text>
         <Text className="text-sm text-gray-500 mt-1">Welcome back! Here's your business overview.</Text>
-      </View>
+      </Animated.View>
 
       {/* Stat Cards */}
       <View className="flex-row flex-wrap justify-between gap-y-4">
-        {/* Total */}
-        <View className="w-[48%] bg-white rounded-xl border border-gray-200 p-4 shadow-sm">
+        <Animated.View entering={FadeInDown.delay(100).duration(500)} className="w-[48%] bg-white rounded-xl border border-gray-200 p-4 shadow-sm">
           <Text className="text-[10px] font-bold text-gray-500 uppercase">Total Accounts</Text>
           <Text className="text-2xl font-bold text-gray-900 mt-1">{stats.total}</Text>
           <Text className="text-[10px] text-gray-400 mt-1">All records</Text>
-        </View>
+        </Animated.View>
         
-        {/* Active */}
-        <View className="w-[48%] bg-white rounded-xl border border-gray-200 p-4 shadow-sm">
+        <Animated.View entering={FadeInDown.delay(200).duration(500)} className="w-[48%] bg-white rounded-xl border border-gray-200 p-4 shadow-sm">
           <Text className="text-[10px] font-bold text-gray-500 uppercase">Active</Text>
           <Text className="text-2xl font-bold text-gray-900 mt-1">{stats.active}</Text>
           <Text className="text-[10px] text-gray-400 mt-1">{Math.round((stats.active / stats.total) * 100)}% of total</Text>
-        </View>
+        </Animated.View>
 
-        {/* Inactive */}
-        <View className="w-[48%] bg-white rounded-xl border border-gray-200 p-4 shadow-sm">
+        <Animated.View entering={FadeInDown.delay(300).duration(500)} className="w-[48%] bg-white rounded-xl border border-gray-200 p-4 shadow-sm">
           <Text className="text-[10px] font-bold text-gray-500 uppercase">Inactive</Text>
           <Text className="text-2xl font-bold text-gray-900 mt-1">{stats.inactive}</Text>
           <Text className="text-[10px] text-gray-400 mt-1">Needs re-engagement</Text>
-        </View>
+        </Animated.View>
 
-        {/* Industries */}
-        <View className="w-[48%] bg-white rounded-xl border border-gray-200 p-4 shadow-sm">
+        <Animated.View entering={FadeInDown.delay(400).duration(500)} className="w-[48%] bg-white rounded-xl border border-gray-200 p-4 shadow-sm">
           <Text className="text-[10px] font-bold text-gray-500 uppercase">Industries</Text>
           <Text className="text-2xl font-bold text-gray-900 mt-1">{stats.industries}</Text>
           <Text className="text-[10px] text-gray-400 mt-1">Sectors covered</Text>
-        </View>
+        </Animated.View>
       </View>
 
       {/* Recent Accounts */}
-      <View className="bg-white rounded-xl border border-gray-200 p-4 mt-6 shadow-sm">
+      <Animated.View entering={FadeInDown.delay(500).duration(500)} className="bg-white rounded-xl border border-gray-200 p-4 mt-6 shadow-sm">
         <View className="flex-row items-center justify-between mb-3">
           <Text className="text-base font-semibold text-gray-900">Recent Accounts</Text>
           <TouchableOpacity onPress={() => router.push('/accounts' as never)} className="flex-row items-center gap-1">
@@ -78,10 +76,42 @@ export default function Dashboard() {
             </View>
           </View>
         ))}
-      </View>
+      </Animated.View>
+
+      {/* Top Industries */}
+      <Animated.View entering={FadeInDown.delay(600).duration(500)} className="bg-white rounded-xl border border-gray-200 p-4 mt-6 shadow-sm">
+        <Text className="text-base font-semibold text-gray-900 mb-4">Top Industries</Text>
+        <View className="space-y-3">
+          {industryCounts.slice(0, 5).map((ind, index) => {
+            const percent = Math.round((ind.count / stats.total) * 100);
+            // Animate Progress Bar
+            const progress = useSharedValue(0);
+            
+            useEffect(() => {
+              progress.value = withDelay(800 + (index * 100), withTiming(percent, { duration: 1000 }));
+            }, [percent]);
+
+            const animatedBarStyle = useAnimatedStyle(() => ({
+              width: `${progress.value}%`,
+            }));
+
+            return (
+              <View key={ind.name} className="flex-row items-center justify-between py-1">
+                <Text className="text-sm text-gray-700 flex-1 pr-2" numberOfLines={1}>{ind.name}</Text>
+                <View className="flex-row items-center gap-3 w-1/2 justify-end">
+                  <View className="w-24 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                    <Animated.View className="h-full bg-blue-500 rounded-full" style={animatedBarStyle} />
+                  </View>
+                  <Text className="text-xs text-gray-500 w-16 text-right font-medium">{ind.count} acc</Text>
+                </View>
+              </View>
+            );
+          })}
+        </View>
+      </Animated.View>
 
       {/* Shortcut Cards (Contacts, Leads, Deals) */}
-      <View className="flex-row justify-between mt-6 gap-x-2 mb-6">
+      <Animated.View entering={FadeInDown.delay(700).duration(500)} className="flex-row justify-between mt-6 gap-x-2 mb-6">
         <TouchableOpacity onPress={() => router.push('/contacts')} className="flex-1 bg-white rounded-xl border border-gray-200 p-4 shadow-sm items-center">
           <Users size={24} color="#374151" className="mb-2" />
           <Text className="text-sm font-semibold text-gray-900">Contacts</Text>
@@ -94,7 +124,7 @@ export default function Dashboard() {
           <Handshake size={24} color="#374151" className="mb-2" />
           <Text className="text-sm font-semibold text-gray-900">Deals</Text>
         </TouchableOpacity>
-      </View>
+      </Animated.View>
     </ScrollView>
   );
 }

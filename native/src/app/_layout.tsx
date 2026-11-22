@@ -6,9 +6,9 @@ import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { 
   LayoutDashboard, Building2, Users, TrendingUp, Handshake, 
-  Inbox, Zap ,PieChart,Upload,MessageSquare,User,Briefcase,ClipboardList
+  Inbox, Zap, PieChart, Upload, MessageSquare, User, Briefcase, ClipboardList
 } from 'lucide-react-native';
-
+import Animated, { FadeInLeft, FadeInDown } from 'react-native-reanimated';
 
 // Custom Drawer Content (Sidebar equivalent for mobile)
 function CustomDrawerContent(props: any) {
@@ -24,9 +24,9 @@ function CustomDrawerContent(props: any) {
     { label: 'Contacts', icon: Users, path: '/contacts' },
     { label: 'Leads', icon: TrendingUp, path: '/leads' },
     { label: 'Deals', icon: Handshake, path: '/deals' },
-    { label: 'Inbox', icon: Inbox, path: '/inbox' },
     { label: 'Feedback', icon: MessageSquare, path: '/feedback' },
     { label: 'Profile', icon: User, path: '/profile' },
+    { label: 'Inbox', icon: Inbox, path: '/inbox' },
     { label: 'My Jobs', icon: Briefcase, path: '/my-jobs' },
     { label: 'Test Results', icon: ClipboardList, path: '/test-results' },
   ] as const;
@@ -39,7 +39,7 @@ function CustomDrawerContent(props: any) {
   return (
     <ScrollView className="flex-1 bg-white">
       {/* Logo Area */}
-      <View className="flex-row items-center gap-3 px-6 pt-12 pb-6 border-b border-gray-100">
+      <Animated.View entering={FadeInDown.duration(400)} className="flex-row items-center gap-3 px-6 pt-12 pb-6 border-b border-gray-100">
         <View className="w-10 h-10 bg-blue-600 rounded-lg items-center justify-center">
           <Zap size={24} color="white" fill="white" />
         </View>
@@ -47,33 +47,37 @@ function CustomDrawerContent(props: any) {
           <Text className="text-xl font-bold text-gray-900 leading-tight">Actify</Text>
           <Text className="text-[10px] font-semibold text-gray-500 tracking-wider">BUSINESS</Text>
         </View>
-      </View>
+      </Animated.View>
 
       {/* Menu Items */}
       <View className="px-4 pt-4">
-        {menuItems.map((item) => {
+        {menuItems.map((item, index) => {
           const isActive = pathname === item.path;
           return (
-            <TouchableOpacity 
+            <Animated.View 
               key={item.label}
-              onPress={() => navigateTo(item.path)}
-              className={`flex-row items-center gap-3 px-3 py-3 rounded-lg mb-1 ${
-                isActive ? 'bg-gray-900' : 'bg-transparent'
-              }`}
+              entering={FadeInLeft.delay(100 + (index * 30)).duration(300)}
             >
-              <item.icon size={18} color={isActive ? 'white' : '#6B7280'} />
-              <Text className={`text-sm font-medium ${
-                isActive ? 'text-white' : 'text-gray-700'
-              }`}>
-                {item.label}
-              </Text>
-            </TouchableOpacity>
+              <TouchableOpacity 
+                onPress={() => navigateTo(item.path)}
+                className={`flex-row items-center gap-3 px-3 py-3 rounded-lg mb-1 transition-all ${
+                  isActive ? 'bg-gray-900' : 'bg-transparent'
+                }`}
+              >
+                <item.icon size={18} color={isActive ? 'white' : '#6B7280'} />
+                <Text className={`text-sm font-medium ${
+                  isActive ? 'text-white' : 'text-gray-700'
+                }`}>
+                  {item.label}
+                </Text>
+              </TouchableOpacity>
+            </Animated.View>
           );
         })}
       </View>
 
-      {/* Bottom Profile (Optional) */}
-      <View className="mt-auto p-4 border-t border-gray-100">
+      {/* Bottom Profile */}
+      <Animated.View entering={FadeInDown.delay(800).duration(400)} className="mt-auto p-4 border-t border-gray-100">
         <View className="flex-row items-center gap-3">
           <View className="w-9 h-9 rounded-full bg-black items-center justify-center">
             <Text className="text-sm font-medium text-white">A</Text>
@@ -83,7 +87,7 @@ function CustomDrawerContent(props: any) {
             <Text className="text-xs text-gray-500">admin@actify.com</Text>
           </View>
         </View>
-      </View>
+      </Animated.View>
     </ScrollView>
   );
 }
@@ -108,12 +112,12 @@ export default function RootLayout() {
         <Drawer.Screen name="contacts" options={{ title: 'Contacts' }} />
         <Drawer.Screen name="leads" options={{ title: 'Leads' }} />
         <Drawer.Screen name="deals" options={{ title: 'Deals' }} />
-        <Drawer.Screen name="inbox" options={{ title: 'Inbox' }} />
         <Drawer.Screen name="feedback" options={{ title: 'Feedback' }} />
         <Drawer.Screen name="profile" options={{ title: 'Profile' }} />
+        <Drawer.Screen name="inbox" options={{ title: 'Inbox' }} />
         <Drawer.Screen name="my-jobs" options={{ title: 'My Jobs' }} />
         <Drawer.Screen name="test-results" options={{ title: 'Test Results' }} />
-        </Drawer>
+      </Drawer>
     </GestureHandlerRootView>
   );
 }
